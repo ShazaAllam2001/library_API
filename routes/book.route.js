@@ -1,8 +1,8 @@
 const express = require('express');
 
 const router = express.Router();
-const Book = require('../models/book.model.js');
 const authorize = require('../middleware/authMiddleware.js');
+const { getBooks, getBook, createBook, editBook, deleteBook } = require('../handlers/book.js');
 
 /**
  * @swagger
@@ -61,14 +61,7 @@ const authorize = require('../middleware/authMiddleware.js');
  *       500:
  *         description: error in fetching
  */
-router.get('/', authorize(['user', 'admin']), async (req, res) => {
-    try {
-        const books = await Book.find({});
-        res.status(200).json(books);
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-});
+router.get('/', authorize(['user', 'admin']), getBooks);
 
 /**
  * @swagger
@@ -95,50 +88,7 @@ router.get('/', authorize(['user', 'admin']), async (req, res) => {
  *       500:
  *         description: error in fetching
  */
-router.get('/:id', authorize(['user', 'admin']), async (req, res) => {
-    try {
-        const { id } = req.params;
-        const book = await Book.findById(id);
-        res.status(200).json(book);
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
-/**
- * @swagger
- * /api/books/{title}:
- *   get:
- *     security:
- *       - bearerAuth: []
- *     summary: Get the book by title
- *     tags: [Books]
- *     parameters:
- *       - in: path
- *         name: title
- *         schema:
- *           type: string
- *         required: true
- *         description: The book title
- *     responses:
- *       200:
- *         description: The book description by title
- *         contens:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Book'
- *       500:
- *         description: error in fetching
- */
-router.get('/:title', authorize(['user', 'admin']), async (req, res) => {
-    try {
-        const { title } = req.params;
-        const books = await Book.find(item => item.title.toLowerCase() === title.toLowerCase());
-        res.status(200).json(books);
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-});
+router.get('/:id', authorize(['user', 'admin']), getBook);
 
 /**
  * @swagger
@@ -164,14 +114,7 @@ router.get('/:title', authorize(['user', 'admin']), async (req, res) => {
  *       500:
  *         description: Some server error
  */
-router.post('/', authorize(['admin']), async (req, res) => {
-    try {
-        const book = await Book.create(req.body);
-        res.status(200).json(book);
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-});
+router.post('/', authorize(['admin']), createBook);
 
 /**
  * @swagger
@@ -195,19 +138,7 @@ router.post('/', authorize(['admin']), async (req, res) => {
  *       500:
  *         description: some server error
  */
-router.put('/:id', authorize(['admin']), async (req, res) => {
-    try {
-        const { id } = req.params;
-        const book = await Book.findByIdAndUpdate(id, req.body);
-        if (!book) {
-            return res.status(404).json({message: "Book not found"});
-        }
-        const updatedBook = await Book.findById(id);
-        res.status(200).json(updatedBook);
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-});
+router.put('/:id', authorize(['admin']), editBook);
 
 /**
  * @swagger
@@ -231,17 +162,6 @@ router.put('/:id', authorize(['admin']), async (req, res) => {
  *       500:
  *         description: some server error
  */
-router.delete('/:id', authorize(['admin']), async (req, res) => {
-    try {
-        const { id } = req.params;
-        const book = await Book.findByIdAndDelete(id, req.body);
-        if (!book) {
-            return res.status(500).json({message: "Book not found"});
-        }
-        res.status(200).json({message: "Book deleted Sucessfully"});
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-});
+router.delete('/:id', authorize(['admin']), deleteBook);
 
 module.exports = router;
