@@ -58,33 +58,6 @@ const authorize = require('../middleware/authMiddleware.js');
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Returned'
- *      404:
- *         description: Book not found
- *      500:
- *         description: Some server error
- */
-
-/**
- * @swagger
- * /api/return:
- *   post:
- *     security:
- *       - bearerAuth: []
- *     summary: Return a book
- *     tags: [Returned]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Returned'
- *     responses:
- *       200:
- *         description: The book was successfully returned
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Returned'
  *       404:
  *         description: Book not found
  *       500:
