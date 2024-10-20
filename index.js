@@ -61,3 +61,5 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.get('/api', (req, res) => {
     res.send("Hello from library API");
 });
+
+export default app;
