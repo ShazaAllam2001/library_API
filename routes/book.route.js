@@ -58,6 +58,8 @@ const authorize = require('../middleware/authMiddleware.js');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Book'
+ *       500:
+ *         description: error in fetching
  */
 router.get('/', authorize(['user', 'admin']), async (req, res) => {
     try {
@@ -90,8 +92,8 @@ router.get('/', authorize(['user', 'admin']), async (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Book'
- *       404:
- *         description: The book was not found
+ *       500:
+ *         description: error in fetching
  */
 router.get('/:id', authorize(['user', 'admin']), async (req, res) => {
     try {
@@ -109,7 +111,7 @@ router.get('/:id', authorize(['user', 'admin']), async (req, res) => {
  *   get:
  *     security:
  *       - bearerAuth: []
- *     summary: Get the book by id
+ *     summary: Get the book by title
  *     tags: [Books]
  *     parameters:
  *       - in: path
@@ -117,16 +119,16 @@ router.get('/:id', authorize(['user', 'admin']), async (req, res) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: The book id
+ *         description: The book title
  *     responses:
  *       200:
- *         description: The book description by id
+ *         description: The book description by title
  *         contens:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Book'
- *       404:
- *         description: The book was not found
+ *       500:
+ *         description: error in fetching
  */
 router.get('/:title', authorize(['user', 'admin']), async (req, res) => {
     try {
@@ -138,6 +140,30 @@ router.get('/:title', authorize(['user', 'admin']), async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/books:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Create a new book
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Book'
+ *     responses:
+ *       200:
+ *         description: The book was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Book'
+ *       500:
+ *         description: Some server error
+ */
 router.post('/', authorize(['admin']), async (req, res) => {
     try {
         const book = await Book.create(req.body);
@@ -147,6 +173,28 @@ router.post('/', authorize(['admin']), async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/books/{id}:
+ *   put:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove the book by id
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The book id
+ * 
+ *     responses:
+ *       200:
+ *         description: The book was deleted
+ *       500:
+ *         description: some server error
+ */
 router.put('/:id', authorize(['admin']), async (req, res) => {
     try {
         const { id } = req.params;
@@ -161,6 +209,28 @@ router.put('/:id', authorize(['admin']), async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/books/{id}:
+ *   delete:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove the book by id
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The book id
+ * 
+ *     responses:
+ *       200:
+ *         description: The book was deleted
+ *       500:
+ *         description: some server error
+ */
 router.delete('/:id', authorize(['admin']), async (req, res) => {
     try {
         const { id } = req.params;

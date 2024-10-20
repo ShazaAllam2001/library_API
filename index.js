@@ -6,7 +6,7 @@ const app = express();
 require('dotenv').config();
 
 const authRoute = require('./routes/auth.route.js');
-const bookRoute = require('./routes/Book.route.js');
+const bookRoute = require('./routes/book.route.js');
 const borrowRoute = require('./routes/borrow.route.js');
 const returnRoute = require('./routes/return.route.js');
 const reportRoute = require('./routes/reports.route.js');
